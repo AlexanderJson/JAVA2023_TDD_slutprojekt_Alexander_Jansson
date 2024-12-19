@@ -3,32 +3,32 @@ package org.example;
 //TIP To <b>Run</b> code, press <shortcut actionId="Run"/> or
 // click the <icon src="AllIcons.Actions.Execute"/> icon in the gutter.
 public class Account {
-    private String cardNumber;
+    private int cardNumber;
 
-    public Account(String cardNumber, String pin, boolean isBlocked, int loginAttempts) {
+    public Account(int cardNumber, int pin, boolean isBlocked, int loginAttempts) {
         this.cardNumber = cardNumber;
         this.pin = pin;
         this.isBlocked = isBlocked;
         this.loginAttempts = loginAttempts;
     }
 
-    private String pin;
+    private int pin;
     private boolean isBlocked;
     private int loginAttempts;
 
-    public String getCardNumber() {
+    public int getCardNumber() {
         return cardNumber;
     }
 
-    public void setCardNumber(String cardNumber) {
+    public void setCardNumber(int cardNumber) {
         this.cardNumber = cardNumber;
     }
 
-    public String getPin() {
+    public int getPin() {
         return pin;
     }
 
-    public void setPin(String pin) {
+    public void setPin(int pin) {
         this.pin = pin;
     }
 

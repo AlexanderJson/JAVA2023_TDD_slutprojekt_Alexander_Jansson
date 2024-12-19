@@ -13,31 +13,24 @@ public class ATM {
         this.bank = bank;
     }
 
-    public boolean loginCard(String card, String pin){
-        return false;
-    }
 
-    public boolean blockCard(String card){
-        return false;
-    }
-
-    public void increaseLoginAttempts(String card){
+    public void increaseLoginAttempts(int card){
 
     }
 
-    public int getLoginAttempts(String card){
+    public int getLoginAttempts(int card){
         return 0;
     }
 
-    public double getBalance(String card){
+    public double getBalance(int card){
         return 0.0;
     }
 
-    public boolean deposit(String card, double amount){
+    public boolean deposit(int card, double amount){
         return false;
     }
 
-    public boolean withdraw(String card, double amount){
+    public boolean withdraw(int card, double amount){
         return false;
     }
 
@@ -45,7 +38,8 @@ public class ATM {
         return false;
     }
 
-    public boolean verifyAccount(String card, String pin){
+    public boolean verifyAccount(int card, int pin) throws CustomExceptions {
+        handleInvalidRanges(card);
         account = bank.getAccountByCard(card);
         if (bank.verifyAccount(card,pin)){
             System.out.println("Framgång!");
@@ -55,8 +49,19 @@ public class ATM {
         return false;
     }
 
+    public boolean blockCard(int card){
+        return false;
+    }
+
+
     public void exit(){
         account = null;
+    }
+
+    public void handleInvalidRanges(int n) throws CustomExceptions {
+        if (n <= 0 || n >=9999) {
+            throw new CustomExceptions(CustomExceptions.ErrorType.INVALID_RANGE_PIN_CARD);
+        }
     }
 
 }

@@ -2,18 +2,18 @@ package org.example;
 
 public interface Bank {
 
-    Account getAccountByCard(String cardNumber);
+    Account getAccountByCard(int cardNumber);
 
-    boolean verifyAccount(String cardNumber, String pin);
-    boolean isBlocked(String card);
+    boolean verifyAccount(int cardNumber, int pin);
+    boolean isBlocked(int card);
 
-    int getFailedAttempts(String card);
-    void increaseAttempts(String card);
-    boolean lockCard(String card);
+    int getFailedAttempts(int card);
+    void increaseAttempts(int card);
+    boolean lockCard(int card);
 
-    double getBalance(String card);
-    double withdraw(String card);
-    double deposit(String card);
-    boolean isVerified(String card);
+    double getBalance(int card);
+    double withdraw(int card);
+    double deposit(int card);
+    boolean isVerified(int card);
 
 }

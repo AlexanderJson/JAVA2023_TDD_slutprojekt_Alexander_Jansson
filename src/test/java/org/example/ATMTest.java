@@ -1,14 +1,14 @@
 package org.example;
 
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 class ATMTest {
 
@@ -23,34 +23,62 @@ class ATMTest {
     void setUp(){
         MockitoAnnotations.openMocks(this);
         atm = new ATM(bank);
-        account = new Account("1020", "1234", true,0);
+        account = new Account(1020, 1234, true,0);
     }
 
 
+    @DisplayName("Denna metod testar om exception kan bli thrown i verifyAccount metoden")
     @Test
-    void verifyAccountCorrectDetails() {
-        String card = account.getCardNumber();
-        String pin = account.getPin();
+    void verifyAccountInvalidRangeThrows() throws CustomExceptions {
+        int invalidCardNegative = -1;
+        int validCardOverThousand = 10000;
+        int validPin = 1234;
+
+        CustomExceptions exceptionsNegative = assertThrows(CustomExceptions.class,
+                () -> {atm.verifyAccount(invalidCardNegative,validPin);
+        });
+        assertEquals(CustomExceptions.ErrorType.INVALID_RANGE_PIN_CARD.getMessage(),exceptionsNegative.getMessage());
+
+        CustomExceptions exceptionsPositive = assertThrows(CustomExceptions.class,
+                () -> {atm.verifyAccount(validCardOverThousand,validPin);
+                });
+        assertEquals(CustomExceptions.ErrorType.INVALID_RANGE_PIN_CARD.getMessage(),exceptionsPositive.getMessage());
+
+    }
+
+    @DisplayName("Testar så rätt kort eller pin skickar true response")
+    @Test
+    void verifyAccountCorrectDetails() throws CustomExceptions {
+        int card = account.getCardNumber();
+        int pin = account.getPin();
         when(bank.verifyAccount(card,pin)).thenReturn(true);
         boolean result = atm.verifyAccount(card,pin);
         assertTrue(result, "verifyAccount ska returnera ett true value");
         verify(bank).verifyAccount(card,pin);
     }
 
+    @DisplayName("Testar så fel kort eller pin skickar false response")
     @Test
-    void verifyAccountIncorrectDetails() {
-        String card = account.getCardNumber();
-        String pin = account.getPin();
+    void verifyAccountIncorrectDetails() throws CustomExceptions {
+        int card = account.getCardNumber();
+        int pin = account.getPin();
         when(bank.verifyAccount(card,pin)).thenReturn(false);
         boolean result = atm.verifyAccount(card,pin);
         assertFalse(result, "verifyAccount ska returnera ett false value");
         verify(bank).verifyAccount(card,pin);
     }
 
-
+    @DisplayName("Kollar så invalid error kan throw när det ska")
     @Test
-    void loginCard() {
+    void handleInvalidRangesTestThrow(){
+        assertThrows(CustomExceptions.class, () -> atm.handleInvalidRanges(-1));
+        assertThrows(CustomExceptions.class, () -> atm.handleInvalidRanges(100000));
+    }
 
+    @DisplayName("Kollar så invalid error kan throw när den inte ska")
+    @Test
+    void handleInvalidRangesTestNoThrow(){
+        assertDoesNotThrow(() -> atm.handleInvalidRanges(1234));
     }
 
     @Test
@@ -78,6 +106,7 @@ class ATMTest {
 
     @Test
     void withdraw() {
+
     }
 
     @Test
