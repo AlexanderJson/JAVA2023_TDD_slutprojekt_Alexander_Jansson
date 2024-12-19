@@ -5,7 +5,13 @@ package org.example;
 public class ATM {
 
     private final Bank bank;
-    private Account account = null;
+
+
+
+    private Account account;
+    public Account getAccount() {
+        return account;
+    }
 
 
 
@@ -31,10 +37,11 @@ public class ATM {
     }
 
     public boolean isVerified(int card){
-        return bank.isVerified(card);
+            return bank.isVerified(card);
     }
 
     public void exit(){
+        System.out.println("Exiting..");
         account = null;
     }
 
@@ -73,15 +80,24 @@ public class ATM {
      */
     public boolean deposit(int card, double amount){
         if (isVerified(card)){
+            System.out.println("Transaktion Framgångsrik. " + amount + " SEK insatt på " + card);
             return bank.deposit(card,amount);
         }
         return false;
     }
 
     public boolean withdraw(int card, double amount){
-        if (isVerified(card)){
-            return bank.withdraw(card,amount);
-        }return false;
+            if (isVerified(card) && hasMoney(card,amount)){
+                System.out.println("Transaktion Framgångsrik. " + amount + " SEK uttaget från " + card);
+                return bank.withdraw(card,amount);
+            }
+        System.out.println("Uttaget misslyckades");
+        return false;
+    }
+
+    public boolean hasMoney(int card, double amount){
+        double balance = bank.getBalance(card);
+        return !(balance < amount);
     }
 
     public double getBalance(int card) throws CustomExceptions {
@@ -96,8 +112,9 @@ public class ATM {
     }
 
     public void handleInvalidCardRanges(int n) throws CustomExceptions {
-        //todo - bättre sätt
-        if (n <= 1000 || n >=9999) {
+        double minDigits = 1000;
+        double maxDigits = 9999;
+        if (n <= minDigits || n >=maxDigits) {
             throw new CustomExceptions(CustomExceptions.ErrorType.INVALID_RANGE_PIN_CARD);
         }
     }

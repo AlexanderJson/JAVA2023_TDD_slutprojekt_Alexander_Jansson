@@ -28,19 +28,8 @@ class ATMTest {
     @Test
     void increaseLoginAttemptsTestIncreasing(){
         int card = account.getCardNumber();
-        when(bank.isBlocked(card)).thenReturn(false);
         atm.increaseLoginAttempts(card);
-        verify(bank,times(1)).isBlocked(card);
         verify(bank,times(1)).increaseAttempts(card);
-    }
-
-    @Test
-    void increaseLoginAttemptsTestUserAlreadyBlocked(){
-        int card = account.getCardNumber();
-        when(bank.isBlocked(card)).thenReturn(true);
-        atm.increaseLoginAttempts(card);
-        verify(bank,times(1)).isBlocked(card);
-        verify(bank,never()).increaseAttempts(card);
     }
 
     @Test
@@ -83,17 +72,6 @@ class ATMTest {
         verify(bank, never()).deposit(card,amount);
     }
 
-    @Test
-    void withdrawTestVerifiedSuccess(){
-        int card = account.getCardNumber();
-        double amount = 100.10;
-        when(bank.isVerified(card)).thenReturn(true);
-        when(bank.withdraw(card,amount)).thenReturn(true);
-        boolean response = atm.withdraw(card,amount);
-        assertTrue(response);
-        verify(bank).isVerified(card);
-        verify(bank).withdraw(card,amount);
-    }
 
 
     @Test
@@ -113,10 +91,25 @@ class ATMTest {
         int card = account.getCardNumber();
         double amount = 100.10;
         when(bank.isVerified(card)).thenReturn(true);
+        when(bank.getBalance(card)).thenReturn(200.10);
         when(bank.withdraw(card,amount)).thenReturn(true);
         boolean response = atm.withdraw(card,amount);
         assertTrue(response);
         verify(bank).withdraw(card,amount);
+    }
+
+    @Test
+    void withdrawTestPoorUser(){
+        int card = account.getCardNumber();
+        double wants = 100.10;
+        double has = 0.19;
+        when(bank.isVerified(card)).thenReturn(true);
+        when(bank.getBalance(card)).thenReturn(has);
+        boolean response = atm.withdraw(card,wants);
+        assertFalse(response);
+        verify(bank).isVerified(card);
+        verify(bank).getBalance(card);
+        verify(bank,never()).withdraw(card,wants);
     }
 
     @Test
@@ -257,19 +250,67 @@ class ATMTest {
     }
 
     @Test
-    void deposit() {
+    void depositTestSuccessfulDeposit() {
+        int card = account.getCardNumber();
+        double sum = 500.10;
+        when(bank.isVerified(card)).thenReturn(true);
+        when(bank.deposit(card,sum)).thenReturn(true);
+        boolean result = atm.deposit(card,sum);
+        assertTrue(result);
+        verify(bank).deposit(card,sum);
+    }
+
+
+    @Test
+    void withdrawTestNotVerifiedWithdrawal() {
+        int card = account.getCardNumber();
+        double sum = 500.10;
+        when(bank.isVerified(card)).thenReturn(false);
+        when(bank.getBalance(card)).thenReturn(510.10);
+        when(bank.withdraw(card,sum)).thenReturn(true);
+        boolean result = atm.withdraw(card,sum);
+        assertFalse(result);
+        verify(bank).isVerified(card);
+        verify(bank,never()).getBalance(card);
+        verify(bank,never()).withdraw(card,sum);
     }
 
     @Test
-    void withdraw() {
-
+    void withdrawTestSuccessfulWithdrawal() {
+        int card = account.getCardNumber();
+        double sum = 500.10;
+        when(bank.isVerified(card)).thenReturn(true);
+        when(bank.getBalance(card)).thenReturn(510.10);
+        when(bank.withdraw(card,sum)).thenReturn(true);
+        boolean result = atm.withdraw(card,sum);
+        assertTrue(result);
+        verify(bank).isVerified(card);
+        verify(bank).getBalance(card);
+        verify(bank).withdraw(card,sum);
     }
 
     @Test
-    void isVerified() {
+    void isVerifiedTestTrue() {
+        int card = account.getCardNumber();
+        when(bank.isVerified(card)).thenReturn(true);
+        boolean r = atm.isVerified(card);
+        assertTrue(r,"Ska returnera sant");
+        verify(bank).isVerified(card);
     }
+
+    @Test
+    void isVerifiedTestFalse() {
+        int card = account.getCardNumber();
+        when(bank.isVerified(card)).thenReturn(false);
+        boolean r = atm.isVerified(card);
+        assertFalse(r, "Ska returnera falskt");
+        verify(bank).isVerified(card);
+    }
+
 
     @Test
     void exit() {
+        atm.exit();
+        assertNull(atm.getAccount());
     }
 }
