@@ -26,12 +26,16 @@ public class ATM {
 
 
     public boolean deposit(int card, double amount){
-
+        if (isVerified(card)){
+            return bank.deposit(card,amount);
+        }
         return false;
     }
 
     public boolean withdraw(int card, double amount){
-        return false;
+        if (isVerified(card)){
+            return bank.withdraw(card,amount);
+        }return false;
     }
 
     public boolean isVerified(int card){
