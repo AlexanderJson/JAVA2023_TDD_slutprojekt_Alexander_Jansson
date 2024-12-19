@@ -15,16 +15,49 @@ class ATMTest {
     @Mock
     private Bank bank;
 
-    @InjectMocks
     private ATM atm;
     private Account account;
 
     @BeforeEach
     void setUp(){
         MockitoAnnotations.openMocks(this);
-        atm = new ATM(bank);
-        account = new Account(1020, 1234, true,0);
+        account = new Account(1020, 1234, true,0,129.40,true);
+        atm = new ATM(bank,account);
     }
+
+
+
+
+
+    @Test
+    void getBalanceTestNotVerified() throws CustomExceptions {
+        int card = account.getCardNumber();
+        //mock metod för att se till att verified nekas
+        when(bank.isVerified(card)).thenReturn(false);
+        //prövar metodden
+       double balance = atm.getBalance(card);
+
+       // ser till att balance är 0.0 vid icke inloggad användare
+       assertEquals(0.0,balance);
+       //ser till att den körde isVerified men inte getBalance från mock banken
+       verify(bank).isVerified(card);
+       verify(bank, never()).getBalance(card);
+    }
+
+    @Test
+    void getBalanceTestSuccessful() throws CustomExceptions {
+        int card = account.getCardNumber();
+        double expectedBalance = account.getBalance();
+
+        when(bank.isVerified(card)).thenReturn(true);
+        when(bank.getBalance(card)).thenReturn(expectedBalance);
+
+        double actualBalance = atm.getBalance(card);
+
+        assertEquals(expectedBalance, actualBalance);
+        verify(bank).getBalance(card);
+    }
+
 
 
     @DisplayName("Denna metod testar om exception kan bli thrown i verifyAccount metoden")
@@ -71,14 +104,14 @@ class ATMTest {
     @DisplayName("Kollar så invalid error kan throw när det ska")
     @Test
     void handleInvalidRangesTestThrow(){
-        assertThrows(CustomExceptions.class, () -> atm.handleInvalidRanges(-1));
-        assertThrows(CustomExceptions.class, () -> atm.handleInvalidRanges(100000));
+        assertThrows(CustomExceptions.class, () -> atm.handleInvalidCardRanges(-1));
+        assertThrows(CustomExceptions.class, () -> atm.handleInvalidCardRanges(100000));
     }
 
     @DisplayName("Kollar så invalid error kan throw när den inte ska")
     @Test
     void handleInvalidRangesTestNoThrow(){
-        assertDoesNotThrow(() -> atm.handleInvalidRanges(1234));
+        assertDoesNotThrow(() -> atm.handleInvalidCardRanges(1234));
     }
 
     @Test
@@ -96,9 +129,6 @@ class ATMTest {
 
     }
 
-    @Test
-    void getBalance() {
-    }
 
     @Test
     void deposit() {
@@ -116,6 +146,4 @@ class ATMTest {
     @Test
     void exit() {
     }
-
-
 }

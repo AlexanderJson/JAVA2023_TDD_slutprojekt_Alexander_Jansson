@@ -5,16 +5,34 @@ package org.example;
 public class Account {
     private int cardNumber;
 
-    public Account(int cardNumber, int pin, boolean isBlocked, int loginAttempts) {
+    public double getBalance() {
+        return balance;
+    }
+
+    public void setBalance(double balance) {
+        this.balance = balance;
+    }
+
+    private double balance;
+    private int pin;
+    private boolean isBlocked;
+    private int loginAttempts;
+
+    private boolean isVerified;
+
+    public Account(boolean isVerified) {
+        this.isVerified = isVerified;
+    }
+
+
+    public Account(int cardNumber, int pin, boolean isBlocked, int loginAttempts, double balance, boolean isVerified) {
         this.cardNumber = cardNumber;
         this.pin = pin;
         this.isBlocked = isBlocked;
         this.loginAttempts = loginAttempts;
     }
 
-    private int pin;
-    private boolean isBlocked;
-    private int loginAttempts;
+
 
     public int getCardNumber() {
         return cardNumber;
@@ -49,5 +67,13 @@ public class Account {
     }
 
 
+
+    public boolean isVerified() {
+        return isVerified;
+    }
+
+    public void setVerified(boolean verified) {
+        isVerified = verified;
+    }
 
 }

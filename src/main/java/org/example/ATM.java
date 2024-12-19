@@ -5,12 +5,13 @@ package org.example;
 public class ATM {
 
     private final Bank bank;
-    private Account account;
+    private Account account = null;
 
 
 
-    public ATM(Bank bank){
+    public ATM(Bank bank, Account account){
         this.bank = bank;
+        this.account = account;
     }
 
 
@@ -22,11 +23,10 @@ public class ATM {
         return 0;
     }
 
-    public double getBalance(int card){
-        return 0.0;
-    }
+
 
     public boolean deposit(int card, double amount){
+
         return false;
     }
 
@@ -34,12 +34,23 @@ public class ATM {
         return false;
     }
 
-    public boolean isVerified(){
-        return false;
+    public boolean isVerified(int card){
+        return bank.isVerified(card);
+    }
+
+    public double getBalance(int card) throws CustomExceptions {
+        handleInvalidCardRanges(card);
+        if (isVerified(card)){
+            double balance = bank.getBalance(card);
+            System.out.println("You have: " + balance);
+            return balance;
+        }
+        System.out.println("No account found");
+        return 0.0;
     }
 
     public boolean verifyAccount(int card, int pin) throws CustomExceptions {
-        handleInvalidRanges(card);
+        handleInvalidCardRanges(card);
         account = bank.getAccountByCard(card);
         if (bank.verifyAccount(card,pin)){
             System.out.println("Framgång!");
@@ -50,6 +61,7 @@ public class ATM {
     }
 
     public boolean blockCard(int card){
+
         return false;
     }
 
@@ -58,10 +70,18 @@ public class ATM {
         account = null;
     }
 
-    public void handleInvalidRanges(int n) throws CustomExceptions {
-        if (n <= 0 || n >=9999) {
+    public void handleInvalidCardRanges(int n) throws CustomExceptions {
+        //todo - bättre sätt
+        if (n <= 1000 || n >=9999) {
             throw new CustomExceptions(CustomExceptions.ErrorType.INVALID_RANGE_PIN_CARD);
         }
     }
+
+    public void handleInvalidTransactionalRanges(int n) throws CustomExceptions {
+        if (n < 0 || n >=999999999) {
+            throw new CustomExceptions(CustomExceptions.ErrorType.INVALID_RANGE_PIN_CARD);
+        }
+    }
+
 
 }
