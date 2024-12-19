@@ -12,5 +12,5 @@ public interface Bank {
     boolean isBlocked(int card);
     int getFailedAttempts(int card);
     void increaseAttempts(int card);
-    boolean lockCard(int card);
+    boolean blockCard(int card);
 }

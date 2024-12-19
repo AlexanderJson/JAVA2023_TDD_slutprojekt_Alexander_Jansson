@@ -18,11 +18,9 @@ public class Account {
     private boolean isBlocked;
     private int loginAttempts;
 
-    private boolean isVerified;
+    private boolean isVerified = false;
 
-    public Account(boolean isVerified) {
-        this.isVerified = isVerified;
-    }
+
 
 
     public Account(int cardNumber, int pin, boolean isBlocked, int loginAttempts, double balance, boolean isVerified) {

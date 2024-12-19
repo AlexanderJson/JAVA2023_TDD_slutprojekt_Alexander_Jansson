@@ -10,10 +10,11 @@ public class CustomExceptions extends Exception{
      * Dynamic way to handle my custom exceptions
      */
     public enum ErrorType{
-        USER_BLOCKED("You are currently blocked"),
-        NOT_AUTHORISED("No card in the machine, returning to atm menu!"),
-        INVALID_RANGE_PIN_CARD("Input needs to be 4 numbers, no negative numbers allowed");
-
+        USER_BLOCKED("Detta kort är blockerat!"),
+        NOT_AUTHORISED("Inget kort i maskinen!"),
+        INVALID_RANGE_PIN_CARD("PIN och Kortnummer måste vara 4 siffror. Inga negativa tal tillåtna"),
+        INVALID_RANGE_TRANSACTIONS_HUGE("Denna summa är för hög. Kontakta banken för ett sådant uttag."),
+        INVALID_RANGE_TRANSACTIONS_NEGATIVE("Inga summor under 1 möjliga.");
         private final String message;
 
         ErrorType(String message) {

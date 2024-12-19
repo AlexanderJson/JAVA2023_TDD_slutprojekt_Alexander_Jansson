@@ -21,10 +21,43 @@ class ATMTest {
     @BeforeEach
     void setUp(){
         MockitoAnnotations.openMocks(this);
-        account = new Account(1020, 1234, true,0,129.40,true);
+        account = new Account(1020, 1234, false,0,129.40,true);
         atm = new ATM(bank,account);
     }
 
+    @Test
+    void increaseLoginAttemptsTestIncreasing(){
+        int card = account.getCardNumber();
+        when(bank.isBlocked(card)).thenReturn(false);
+        atm.increaseLoginAttempts(card);
+        verify(bank,times(1)).isBlocked(card);
+        verify(bank,times(1)).increaseAttempts(card);
+    }
+
+    @Test
+    void increaseLoginAttemptsTestUserAlreadyBlocked(){
+        int card = account.getCardNumber();
+        when(bank.isBlocked(card)).thenReturn(true);
+        atm.increaseLoginAttempts(card);
+        verify(bank,times(1)).isBlocked(card);
+        verify(bank,never()).increaseAttempts(card);
+    }
+
+    @Test
+    void blockAccountTestSuccessfulBlocking(){
+        int card = account.getCardNumber();
+        when(bank.blockCard(card)).thenReturn(true);
+        atm.blockCard(card);
+        verify(bank).blockCard(card);
+    }
+
+    @Test
+    void blockAccountTestFailedBlocking(){
+        int card = account.getCardNumber();
+        when(bank.blockCard(card)).thenReturn(false);
+        atm.blockCard(card);
+        verify(bank).blockCard(card);
+    }
 
     @Test
     void depositTestVerified(){
@@ -190,21 +223,38 @@ class ATMTest {
         assertDoesNotThrow(() -> atm.handleInvalidCardRanges(1234));
     }
 
-    @Test
-    void blockCard() {
 
+    @DisplayName("Kollar så invalid error kan throw när det ska")
+    @Test
+    void handleInvalidTransactionRangesThrow(){
+        assertThrows(CustomExceptions.class, () -> atm.handleInvalidDoubleRanges(-1));
+        assertThrows(CustomExceptions.class, () -> atm.handleInvalidDoubleRanges(100000));
+    }
+    @DisplayName("Kollar så invalid error kan throw när den inte ska")
+    @Test
+    void handleInvalidTransactionTestNoThrow(){
+        assertDoesNotThrow(() -> atm.handleInvalidDoubleRanges(1200.00));
     }
 
     @Test
-    void increaseLoginAttempts() {
+    void handleLoginAttempt_NotBlocked(){
+        int card = account.getCardNumber();
+        // ett misslyckas försök
+        when(bank.getFailedAttempts(card)).thenReturn(1);
 
+        atm.handleLoginAttempt(card);
+        verify(bank).increaseAttempts(card);
+        verify(bank,never()).blockCard(card);
     }
 
     @Test
-    void getLoginAttempts() {
-
+    void handleLoginAttempt_Blocked(){
+        int card = account.getCardNumber();
+        when(bank.getFailedAttempts(card)).thenReturn(3);
+        atm.handleLoginAttempt(card);
+        verify(bank).increaseAttempts(card);
+        verify(bank).blockCard(card);
     }
-
 
     @Test
     void deposit() {
