@@ -26,8 +26,25 @@ class ATMTest {
     }
 
 
+    @Test
+    void isVerifiedTestSuccess(){
+        int card = account.getCardNumber();
+        //bank godkänner att användaren är verifierad
+        when(bank.isVerified(card)).thenReturn(true);
+        boolean response = atm.isVerified(card);
+        assertTrue(response);
+        verify(bank).isVerified(card);
+    }
 
-
+    @Test
+    void isVerifiedTestUnsuccessful(){
+        int card = account.getCardNumber();
+        //bank godkänner att användaren är verifierad
+        when(bank.isVerified(card)).thenReturn(false);
+        boolean response = atm.isVerified(card);
+        assertFalse(response);
+        verify(bank).isVerified(card);
+    }
 
     @Test
     void getBalanceTestNotVerified() throws CustomExceptions {
