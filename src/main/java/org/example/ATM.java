@@ -1,5 +1,5 @@
 package org.example;
-import org.example.CustomExceptions.ErrorType.*;
+import org.example.CustomExceptions;
 /**
  * ATM klassen, innehåller all logik
  */

@@ -1,0 +1,333 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"> 
+  <title>Coverage Report > ATM</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">org.example</a>
+</div>
+
+<h1>Coverage Summary for Class: ATM (org.example)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Branch, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">ATM</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (15/15)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (24/24)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (50/50)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package org.example;
+&nbsp;import org.example.CustomExceptions.ErrorType.*;
+&nbsp;/**
+&nbsp; * ATM klassen, innehåller all logik
+&nbsp; */
+&nbsp;public class ATM {
+&nbsp;
+&nbsp;    private final Bank bank;
+&nbsp;    private Account account;
+&nbsp;
+&nbsp;    /**
+&nbsp;     *  Skapar en instans av {@code ATM}
+&nbsp;     *
+&nbsp;     * @param bank Banken som används - endast för mocking
+&nbsp;     * @param account kontot som ska vara aktivt på ATM vid lyckas inloggning
+&nbsp;     */
+&nbsp;
+<b class="fc">&nbsp;    public ATM(Bank bank, Account account) {</b>
+<b class="fc">&nbsp;        this.bank = bank;</b>
+<b class="fc">&nbsp;        this.account = account;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;
+&nbsp;    /**
+&nbsp;     * @return {@code account} som är inloggat
+&nbsp;     */
+&nbsp;
+&nbsp;    public Account getAccount() {
+<b class="fc">&nbsp;        return account;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;
+&nbsp;    /**
+&nbsp;     *
+&nbsp;     * @param card kortnumret
+&nbsp;     * @param pin pin koden
+&nbsp;     * @return {@code true} of verifiering lyckas, annars {@code false}
+&nbsp;     * @throws CustomExceptions kastas om kortnumret är felaktigt intervall
+&nbsp;     */
+&nbsp;
+&nbsp;    public boolean verifyAccount(int card, int pin) throws CustomExceptions {
+<b class="fc">&nbsp;                handleInvalidCardRanges(card);</b>
+<b class="fc">&nbsp;                if (bank.verifyAccount(card, pin)) {</b>
+<b class="fc">&nbsp;                    account = bank.getAccountByCard(card);</b>
+<b class="fc">&nbsp;                    handleLoginAttempt(card);</b>
+<b class="fc">&nbsp;                    return true;</b>
+&nbsp;                }
+<b class="fc">&nbsp;        return false;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Hanterar misslyckade inloggningsförsök.
+&nbsp;     * Om användaren gör tre i rad, blockeras kortet.
+&nbsp;     *
+&nbsp;     * @param card Kortnummer
+&nbsp;     */
+&nbsp;
+&nbsp;    public void handleLoginAttempt(int card){
+<b class="fc">&nbsp;        increaseLoginAttempts(card);</b>
+<b class="fc">&nbsp;        int attemptsLeft = getLoginAttempts(card);</b>
+<b class="fc">&nbsp;        if (attemptsLeft == 3){</b>
+<b class="fc">&nbsp;            System.out.println(&quot;Account is blocked&quot;);</b>
+<b class="fc">&nbsp;            blockCard(card);</b>
+&nbsp;        } else {
+<b class="fc">&nbsp;            System.out.println(&quot;You have &quot; + (3 - attemptsLeft) + &quot; left until blocked.&quot;);</b>
+&nbsp;        }
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Blockerar kortet. Används i samband med
+&nbsp;     *  {@link ATM#verifyAccount(int, int)}
+&nbsp;     */
+&nbsp;
+&nbsp;    public void blockCard(int card){
+<b class="fc">&nbsp;        bank.blockCard(card);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Ökar antal inloggningsförsök (max 3). Används i samband med
+&nbsp;     *  {@link ATM#handleLoginAttempt(int)}
+&nbsp;     */
+&nbsp;    public void increaseLoginAttempts(int card){
+<b class="fc">&nbsp;        bank.increaseAttempts(card);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     *  Hämtar antal inloggninsförsök. Används i samband med
+&nbsp;     *  {@link ATM#handleLoginAttempt(int)}
+&nbsp;     */
+&nbsp;    public int getLoginAttempts(int card){
+<b class="fc">&nbsp;        return bank.getFailedAttempts(card);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Avslutar session. Sätter konto som null, vilket gör verifiering till {@code false}
+&nbsp;     * Används i samband med {@link ATM#verifyAccount(int, int)}
+&nbsp;     */
+&nbsp;    public void exit(){
+<b class="fc">&nbsp;        System.out.println(&quot;Exiting..&quot;);</b>
+<b class="fc">&nbsp;        account = null;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Metod för att sätta in pengar
+&nbsp;     *  @param card   Kortnummer.
+&nbsp;     *  @param amount Belopp att sätta in.
+&nbsp;     *  @return {@code true} om transaktionen lyckas, annars {@code false}.
+&nbsp;     */
+&nbsp;    public boolean deposit(int card, double amount){
+<b class="fc">&nbsp;        if (isVerified(card)){</b>
+<b class="fc">&nbsp;            System.out.println(&quot;Transaktion Framgångsrik. &quot; + amount + &quot; SEK insatt på &quot; + card);</b>
+<b class="fc">&nbsp;            return bank.deposit(card,amount);</b>
+&nbsp;        }
+<b class="fc">&nbsp;        return false;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Metod för att ta ut pengar
+&nbsp;     * @param card   Kortnummer.
+&nbsp;     * @param amount Belopp att ta ut.
+&nbsp;     * @return {@code true} om transaktionen lyckas, annars {@code false}.
+&nbsp;     */
+&nbsp;    public boolean withdraw(int card, double amount){
+<b class="fc">&nbsp;            if (isVerified(card) &amp;&amp; hasMoney(card,amount)){</b>
+<b class="fc">&nbsp;                System.out.println(&quot;Transaktion Framgångsrik. &quot; + amount + &quot; SEK uttaget från &quot; + card);</b>
+<b class="fc">&nbsp;                return bank.withdraw(card,amount);</b>
+&nbsp;            }
+<b class="fc">&nbsp;        System.out.println(&quot;Uttaget misslyckades&quot;);</b>
+<b class="fc">&nbsp;        return false;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Metod för att kolla om användaren har tillräckligt med pengar.
+&nbsp;     * Använder {@link Bank#getBalance(int)}
+&nbsp;     * @param card   Kortnummer.
+&nbsp;     * @param amount Belopp att kontrollera.
+&nbsp;     * @return {@code true} om det finns tillräckligt med pengar, annars {@code false}.
+&nbsp;     */
+&nbsp;    public boolean hasMoney(int card, double amount){
+<b class="fc">&nbsp;        double balance = bank.getBalance(card);</b>
+<b class="fc">&nbsp;        return !(balance &lt; amount);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Används för att hämta användarens saldo på konto.
+&nbsp;     * @param card Kortnummer.
+&nbsp;     * @return {@code double balance} AKA pengar på kontot
+&nbsp;     * @throws CustomExceptions Om användaren inte är verifierad.
+&nbsp;     */
+&nbsp;    public double getBalance(int card) throws CustomExceptions {
+<b class="fc">&nbsp;        if (!isVerified(card)){</b>
+<b class="fc">&nbsp;            throw new CustomExceptions(CustomExceptions.ErrorType.NOT_AUTHORISED);</b>
+&nbsp;        }
+<b class="fc">&nbsp;        double balance = bank.getBalance(card);</b>
+<b class="fc">&nbsp;        System.out.println(&quot;You have &quot; + balance);</b>
+<b class="fc">&nbsp;        return balance;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Kollar så användaren är verifierad. Aktiveras med
+&nbsp;     * {@link ATM#verifyAccount(int, int)}
+&nbsp;     * @param card kortnummret
+&nbsp;     * @return {@code true} eller {@code false}
+&nbsp;     */
+&nbsp;    public boolean isVerified(int card) {
+<b class="fc">&nbsp;        if (account == null){</b>
+<b class="fc">&nbsp;            System.out.println(&quot;Insert your card&quot;);</b>
+<b class="fc">&nbsp;            return false;</b>
+&nbsp;        }
+<b class="fc">&nbsp;        return true;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Helper metod, kollar så kortnummer/pin kod inte är negativa eller för höga. Måste vara
+&nbsp;     * 4 siffror.
+&nbsp;     * @param n antingen kortnummer eller pinkod
+&nbsp;     * @throws CustomExceptions Om kortnumret är ogiltigt.
+&nbsp;     */
+&nbsp;    public void handleInvalidCardRanges(int n) throws CustomExceptions {
+<b class="fc">&nbsp;        int minDigits = 1000;</b>
+<b class="fc">&nbsp;        int maxDigits = 9999;</b>
+<b class="fc">&nbsp;        if (n &lt;= minDigits || n &gt;=maxDigits) {</b>
+<b class="fc">&nbsp;            throw new CustomExceptions(CustomExceptions.ErrorType.INVALID_RANGE_PIN_CARD);</b>
+&nbsp;        }
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Kollar så att transaktionsbeloppet är inom giltigt intervall.
+&nbsp;     * Sätter en ribba på för höga belopp med av två anledningar:
+&nbsp;     * 1. Overflow kommer ske om vi går över {@code Double.MAX_VALUE}
+&nbsp;     * detta hade kunnats unyttjats för att belasta appen.
+&nbsp;     * 2. Det hade varit orimligt att låta en användare ta ut mer än 1 miljon
+&nbsp;     * utan någon extra bekräftelse. Tror jag!
+&nbsp;     * @param n Belopp att kontrollera.
+&nbsp;     * @throws CustomExceptions Om beloppet är negativt eller för stort.
+&nbsp;     */
+&nbsp;    public void handleInvalidDoubleRanges(double n) throws CustomExceptions {
+<b class="fc">&nbsp;        double maxValue = 1000000.00;</b>
+&nbsp;        //Double.MAX_VALUE;
+<b class="fc">&nbsp;        if (n &lt;= 0) {</b>
+<b class="fc">&nbsp;            throw new CustomExceptions(CustomExceptions.ErrorType.INVALID_RANGE_TRANSACTIONS_NEGATIVE);</b>
+&nbsp;        }
+<b class="fc">&nbsp;        if (n &gt;= maxValue) {</b>
+<b class="fc">&nbsp;            throw new CustomExceptions(CustomExceptions.ErrorType.INVALID_RANGE_TRANSACTIONS_HUGE );</b>
+&nbsp;        }
+&nbsp;    }
+&nbsp;
+&nbsp;    }
+&nbsp;
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2024-12-22 05:07</div>
+</div>
+</body>
+</html>
