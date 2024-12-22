@@ -1,0 +1,107 @@
+
+VerifyAccount: 
+Error: class java.lang.Long cannot be cast to class java.lang.Integer (java.lang.Long and java.lang.Integer are in module java.base of loader 'bootstrap')
+Error: class java.lang.String cannot be cast to class java.lang.Integer (java.lang.String and java.lang.Integer are in module java.base of loader 'bootstrap')
+Error: class java.lang.Boolean cannot be cast to class java.lang.Integer (java.lang.Boolean and java.lang.Integer are in module java.base of loader 'bootstrap')
+Error: class java.lang.Double cannot be cast to class java.lang.Integer (java.lang.Double and java.lang.Integer are in module java.base of loader 'bootstrap')
+Error: Cannot invoke "java.lang.Integer.intValue()" because "invalidInput" is null
+
+
+isVerified: 
+Error: java.lang.ClassCastException
+Error: java.lang.NullPointerException
+
+getBalance: 
+Error: java.lang.ClassCastException
+Error: java.lang.NullPointerException
+
+deposit: 
+Error: java.lang.ClassCastException
+Error: java.lang.NullPointerException
+
+withdraw: 
+Error: java.lang.ClassCastException
+Error: java.lang.NullPointerException
+
+hasMoney: 
+Error: java.lang.ClassCastException
+Error: java.lang.NullPointerException
+
+handleLoginAttempt: 
+Error: java.lang.ClassCastException
+Error: java.lang.NullPointerException
+
+handleLoginAttempt: 
+Error: java.lang.ClassCastException
+Error: java.lang.NullPointerException
+
+handleLoginAttempt: 
+Error: java.lang.ClassCastException
+Error: org.example.CustomExceptions
+Error: java.lang.NullPointerException
+
+
+handleLoginAttempt: 
+Error: java.lang.ClassCastException
+Error: org.example.CustomExceptions
+Error: java.lang.NullPointerException
+
+VerifyAccount: 
+Error: java.lang.ClassCastException
+Error: org.example.CustomExceptions
+Error: java.lang.NullPointerException
+
+
+
+
+// kod att fortsätta med efter uppgift:
+//package org.example;
+
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.lang.reflect.Method;
+import java.util.HashSet;
+import java.util.Random;
+import java.util.Set;
+import java.util.function.Consumer;
+//
+//public class InputTesterAlgorithm {
+//
+//    //todo kolla mer på efter upphift
+//    public InputTesterAlgorithm(){
+//    }
+//    public void generateInvalidInputs(int range) throws IOException {
+//        int seed = 1234;
+//        String filename = "errorsToFix.txt";
+//
+//        Random random = new Random(seed);
+//        Set<String> foundErrorList = new HashSet<>();
+//        Object[] invalidInputs = {
+//                false,
+//                true,
+//                "" ,
+//                null,
+//                0,
+//                1000000000L,
+//                1.242443441314,
+//                -1,
+//        };
+//        try(BufferedWriter writer = new BufferedWriter(new FileWriter(filename,true))) {
+//            writer.append("VerifyAccount: ").append("\n");
+//            for (int i = 0; i < range; i++) {
+//                Object invalidInput = invalidInputs[random.nextInt(invalidInputs.length)];
+//                try {
+//                    atm.verifyAccount((int) invalidInput, (int) invalidInput);
+//                } catch (Exception e) {
+//                    String errorMsg = e.getClass().getName();
+//                    if (!foundErrorList.contains(errorMsg)) {
+//                        foundErrorList.add(errorMsg);
+//                        writer.append("Error: ").append(errorMsg).append("\n");
+//                    } else {
+//                        System.out.println("Found same error: " + e.getMessage());
+//                    }
+//                }
+//            }
+//        }
+//    }
