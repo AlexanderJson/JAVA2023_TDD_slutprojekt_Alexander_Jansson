@@ -1,6 +1,8 @@
 package org.example;
 import org.example.CustomExceptions.ErrorType.*;
-
+/**
+ * ATM klassen, innehåller all logik
+ */
 public class ATM {
 
     private final Bank bank;
@@ -20,7 +22,7 @@ public class ATM {
 
 
     /**
-     * @return Kontot som är inloggat
+     * @return {@code account} som är inloggat
      */
 
     public Account getAccount() {

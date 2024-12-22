@@ -1,5 +1,9 @@
 package org.example;
 
+
+/**
+ * Bank (interface för att mocka en bank)
+ */
 public interface Bank {
 
     Account getAccountByCard(int cardNumber);
