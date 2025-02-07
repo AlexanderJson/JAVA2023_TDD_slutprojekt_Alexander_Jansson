@@ -7,10 +7,6 @@ Enkel ATM konsolapp i Java. Detta är en skoluppgift för Testning i Java.
 ### Länk för dokumentation
 - **Javadoc Dokumentation (Preview):** [Se Dokumentationen](https://alexanderjson.github.io/JAVA2023_TDD_slutprojekt_Alexander_Jansson/org/example/package-summary.html)
 
-### Länk för coverage rapport
-- **Javadoc Dokumentation (Preview):** [Se Dokumentationen](https://alexanderjson.github.io/JAVA2023_TDD_slutprojekt_Alexander_Jansson/org/example/package-summary.html)
-
-
 ## Hur du använder projektet
 
 ### Förutsättningar
